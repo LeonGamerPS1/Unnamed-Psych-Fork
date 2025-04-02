@@ -1,0 +1,16 @@
+{
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#3d433ddd",
+        "activityBar.background": "#313731aa"
+    },
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: 0.7.3]",
+    "cSpell.words": [
+        "flixel",
+        "flxanimate",
+        "hxdiscord",
+        "linc",
+        "luajit",
+        "modchart",
+        "tjson"
+    ]
+}

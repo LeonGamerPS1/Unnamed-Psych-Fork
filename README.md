@@ -30,6 +30,7 @@ same goes for *Lua Scripts*, comment out or delete the line with `LUA_ALLOWED`, 
 * Smokey - Sprite Atlas Support
 * Nebula the Zorua - some Lua reworks
 * superpowers04 - LUA JIT Fork
+* TheoDevelops - [Funkin-Modchart Library](https://github.com/TheoDevelops/FunkinModchart)
 _____________________________________
 
 # Features
