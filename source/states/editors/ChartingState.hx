@@ -2881,9 +2881,7 @@ class ChartingState extends MusicBeatState
 		var minHeight:Int = Std.int((GRID_SIZE * zoomList[curZoom] / 2) + GRID_SIZE / 2);
 		if(height < minHeight) height = minHeight;
 		if(height < 1) height = 1; //Prevents error of invalid height
-
 		var spr:FlxSprite = new FlxSprite(note.x + (GRID_SIZE * 0.5) - 4, note.y + GRID_SIZE / 2).makeGraphic(8, height);
-		spr.color = CoolUtil.dominantColor(note);
 		spr.shader = note.shader;
 		return spr;
 	}
