@@ -3,7 +3,7 @@
         "titleBar.activeBackground": "#3d433ddd",
         "activityBar.background": "#313731aa"
     },
-    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: 0.7.3]",
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}${separator}[Branch: HEAD]",
     "cSpell.words": [
         "flixel",
         "flxanimate",
