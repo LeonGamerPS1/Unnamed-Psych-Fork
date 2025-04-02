@@ -1,8 +1,9 @@
 package objects;
 
+import flixel.FlxObject;
+import flixel.FlxBasic;
 import backend.animation.PsychAnimationController;
 import shaders.RGBPalette;
-import shaders.RGBPalette.RGBShaderReference;
 
 class StrumNote extends FlxSprite
 {
@@ -179,10 +180,17 @@ class StrumNote extends FlxSprite
 	{
 		animation.play(anim, force);
 		centerOffsets();
-		if (anim == "confirm" && !PlayState.isPixelStage)
-			offset.set(offset.x - 13 * (Note.swagWidth / width), offset.y - 13 * (Note.swagWidth / height));
+		centerOrigin();
 
 		if (useRGBShader)
 			rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
+	}
+
+	public function centerPosTo(sprite:FlxObject):Dynamic
+	{
+		x = sprite.x + (sprite.width / 2) - (width / 2);
+		y = sprite.y + (sprite.height / 2) - (height / 2);
+
+		return this;
 	}
 }
