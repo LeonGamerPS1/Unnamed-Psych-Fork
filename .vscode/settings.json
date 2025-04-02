@@ -11,6 +11,8 @@
         "linc",
         "luajit",
         "modchart",
-        "tjson"
+        "sqirra",
+        "tjson",
+        "Uncatchable"
     ]
 }
