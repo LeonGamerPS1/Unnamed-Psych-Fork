@@ -1,5 +1,6 @@
 package states;
 
+import modchart.Manager;
 import backend.Highscore;
 import backend.StageData;
 import backend.WeekData;
@@ -158,13 +159,14 @@ class PlayState extends MusicBeatState
 	public var eventNotes:Array<EventNote> = [];
 
 	public var camFollow:FlxObject;
-
 	private static var prevCamFollow:FlxObject;
 
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
 	public var playerStrums:FlxTypedGroup<StrumNote>;
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
+
+	public var modchartManager:Manager;
 
 	public var camZooming:Bool = false;
 	public var camZoomingMult:Float = 1;
@@ -621,6 +623,11 @@ class PlayState extends MusicBeatState
 				event.strumTime -= eventEarlyTrigger(event);
 			eventNotes.sort(sortByTime);
 		}
+
+
+		modchartManager = new Manager();
+		insert(members.indexOf(noteGroup),modchartManager);
+
 
 		// SONG SPECIFIC SCRIPTS
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
@@ -1761,6 +1768,8 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
+	
+
 		if (!inCutscene && !paused && !freezeCamera)
 		{
 			FlxG.camera.followLerp = 2.4 * cameraSpeed * playbackRate;
@@ -1779,6 +1788,7 @@ class PlayState extends MusicBeatState
 		}
 		else
 			FlxG.camera.followLerp = 0;
+		super.update(elapsed);
 		callOnScripts('onUpdate', [elapsed]);
 
 		
@@ -1872,8 +1882,7 @@ class PlayState extends MusicBeatState
 			while (unspawnNotes.length > 0 && unspawnNotes[0].strumTime - Conductor.songPosition < time)
 			{
 				var dunceNote:Note = unspawnNotes[0];
-				if (dunceNote.isSustainNote)
-					dunceNote.cameras = [camHUD0];
+		
 				notes.insert(0, dunceNote);
 				dunceNote.spawned = true;
 
@@ -1951,7 +1960,7 @@ class PlayState extends MusicBeatState
 			}
 			checkEventNote();
 
-			super.update(elapsed);
+		
 		}
 
 		#if debug
@@ -3212,6 +3221,10 @@ class PlayState extends MusicBeatState
 
 		if (opponentVocals.length <= 0)
 			vocals.volume = 1;
+		var strum:StrumNote = opponentStrums.members[Std.int(Math.abs(note.noteData))];
+		strum.rgbShader.r = note.rgbShader.r;
+		strum.rgbShader.g = note.rgbShader.g;
+		strum.rgbShader.b = note.rgbShader.b;
 		strumPlayAnim(true, Std.int(Math.abs(note.noteData)), Conductor.stepCrochet * 1.25 / 1000 / playbackRate);
 		note.hitByOpponent = true;
 
@@ -3234,6 +3247,12 @@ class PlayState extends MusicBeatState
 			return;
 		if (cpuControlled && note.ignoreNote)
 			return;
+
+
+		var strum:StrumNote = playerStrums.members[Std.int(Math.abs(note.noteData))];
+		strum.rgbShader.r = note.rgbShader.r;
+		strum.rgbShader.g = note.rgbShader.g;
+		strum.rgbShader.b = note.rgbShader.b;
 
 		var isSus:Bool = note.isSustainNote; // GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
 		var leData:Int = Math.round(Math.abs(note.noteData));

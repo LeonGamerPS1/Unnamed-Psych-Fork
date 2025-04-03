@@ -104,6 +104,13 @@
 	<haxelib name="flxanimate"/>
 	<haxelib name="funkin-modchart"/>
 
+
+	<haxedef name="FM_ENGINE" value="Psych"/>
+	<haxedef name="FM_ENGINE_VERSION" value="0.7"/>
+
+	<haxelib name="funkin-modchart" />
+	<haxeflag name="--macro" value="modchart.core.macros.Macro.includeFiles()"/>
+
 	<!-- Disable Discord IO Thread -->
 	<haxedef name="DISCORD_DISABLE_IO_THREAD" if="hxdiscord_rpc" />
 	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />

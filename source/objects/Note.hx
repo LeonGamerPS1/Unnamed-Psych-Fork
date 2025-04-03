@@ -556,15 +556,8 @@ class Note extends FlxSprite
 
 	public function clipToStrumNote(myStrum:StrumNote)
 	{
-		var center:Float = myStrum.y + offsetY + Note.swagWidth / 2;
-		var downscrollMult = myStrum.downScroll ? -1 : 1;
-		var fullAngle = myStrum.direction;
-		var angRad = fullAngle * (Math.PI / 180);
-		var topCut = (antialiasing ? 2 : 0);
-		var cutOffset = topCut * scale.y * downscrollMult;
-		x += cutOffset * Math.cos(angRad);
-		y += cutOffset * Math.sin(angRad);
-
+		
+         var center:Float = myStrum.y + (myStrum.height / 2) + offsetY;
 		if (isSustainNote && (mustPress || !ignoreNote) && (!mustPress || (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))))
 		{
 			var swagRect:FlxRect = clipRect;
@@ -590,22 +583,5 @@ class Note extends FlxSprite
 		}
 	}
 
-	override function set_frame(v:FlxFrame):FlxFrame
-	{
-		var oldFrame:FlxFrame = frame;
-		super.set_frame(v);
-
-		if (v == null)
-			return v;
-
-		if (_frame != null && isSustainNote && !PlayState.isPixelStage)
-		{
-			// texture bleeding gap workaround
-			_frame.sourceSize.y -= 2;
-			_frame.frame.height -= 2;
-			_frame.frame.y += 1;
-		}
-
-		return v;
-	}
+	
 }
