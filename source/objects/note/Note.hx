@@ -1,11 +1,10 @@
-package objects;
+package objects.note;
 
 import flixel.graphics.frames.FlxFrame;
 import backend.animation.PsychAnimationController;
 import backend.NoteTypesConfig;
 import shaders.RGBPalette;
 import shaders.RGBPalette.RGBShaderReference;
-import objects.StrumNote;
 import flixel.math.FlxRect;
 
 using StringTools;
@@ -125,6 +124,8 @@ class Note extends FlxSprite
 	public var hitsoundDisabled:Bool = false;
 	public var hitsoundChartEditor:Bool = true;
 	public var hitsound:String = 'hitsound';
+	public var sustain:Sustain;
+	public var strum(default, null):StrumNote;
 
 	private function set_multSpeed(value:Float):Float
 	{
@@ -257,6 +258,8 @@ class Note extends FlxSprite
 		x += offsetX;
 	}
 
+	public var speed:Float = 1;
+
 	public static function initializeGlobalRGBShader(noteData:Int)
 	{
 		if (globalRgbShaders[noteData] == null)
@@ -368,6 +371,8 @@ class Note extends FlxSprite
 	function loadNoteAnims()
 	{
 		animation.addByPrefix(colArray[noteData] + 'Scroll', colArray[noteData] + '0');
+		animation.addByPrefix('hold', colArray[noteData] + ' hold piece0');
+		animation.addByPrefix('end', colArray[noteData] + ' hold end0');
 
 		setGraphicSize(Std.int(width * 0.7));
 		updateHitbox();
@@ -427,11 +432,13 @@ class Note extends FlxSprite
 
 	public function followStrumNote(myStrum:StrumNote, fakeCrochet:Float, songSpeed:Float = 1)
 	{
+		strum = myStrum;
 		var strumX:Float = myStrum.x;
 		var strumY:Float = myStrum.y;
 		var strumAngle:Float = myStrum.angle;
 		var strumAlpha:Float = myStrum.alpha;
 		var strumDirection:Float = myStrum.direction;
+		speed = songSpeed * multSpeed;
 
 		distance = (0.45 * (Conductor.songPosition - strumTime) * songSpeed * multSpeed);
 		if (!myStrum.downScroll)
@@ -448,10 +455,17 @@ class Note extends FlxSprite
 			x = strumX + offsetX + Math.cos(angleDir) * distance;
 
 		if (copyY)
-		{
 			y = strumY + offsetY + correctionOffset + Math.sin(angleDir) * distance;
+
+		if (wasGoodHit)
+		{
+			copyY = copyX = false;
+			setPosition(strumX + offsetX, strumY + offsetY);
+			visible = false;
 		}
 	}
+
+	public var hitByPlayer:Bool = false;
 
 	public function clipToStrumNote(myStrum:StrumNote)
 	{

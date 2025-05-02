@@ -18,9 +18,9 @@ import flixel.addons.display.FlxRuntimeShader;
 
 import cutscenes.DialogueBoxPsych;
 
-import objects.StrumNote;
-import objects.Note;
-import objects.NoteSplash;
+
+import objects.note.*;
+
 import objects.Character;
 
 import states.MainMenuState;

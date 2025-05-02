@@ -5,6 +5,7 @@ import states.stages.objects.*;
 import substates.GameOverSubstate;
 import cutscenes.DialogueBox;
 import openfl.utils.Assets as OpenFlAssets;
+import objects.note.Note;
 
 class SchoolEvil extends BaseStage
 {
@@ -58,7 +59,7 @@ class SchoolEvil extends BaseStage
 				}
 		}
 	}
-	override function eventPushed(event:objects.Note.EventNote)
+	override function eventPushed(event:objects.note.Note.EventNote)
 	{
 		// used for preloading assets used on events
 		switch(event.event)

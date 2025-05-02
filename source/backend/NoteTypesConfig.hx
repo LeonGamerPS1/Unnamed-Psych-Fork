@@ -1,6 +1,6 @@
 package backend;
 
-import objects.Note;
+import objects.note.*;
 
 typedef NoteTypeProperty = {
 	property:Array<String>,

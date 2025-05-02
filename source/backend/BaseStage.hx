@@ -5,7 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSubState;
 import backend.MusicBeatState;
 
-import objects.Note.EventNote;
+import objects.note.Note.EventNote;
 import objects.Character;
 
 enum Countdown

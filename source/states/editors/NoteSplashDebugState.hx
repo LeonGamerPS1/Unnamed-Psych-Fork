@@ -1,8 +1,7 @@
 package states.editors;
 
-import objects.Note;
-import objects.StrumNote;
-import objects.NoteSplash;
+import objects.note.*;
+import objects.note.NoteSplash;
 import flixel.addons.ui.FlxInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 

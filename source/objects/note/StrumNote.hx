@@ -1,5 +1,4 @@
-package objects;
-
+package objects.note;
 import flixel.FlxObject;
 import flixel.FlxBasic;
 import backend.animation.PsychAnimationController;

@@ -1,4 +1,4 @@
-package objects;
+package objects.note;
 
 import backend.animation.PsychAnimationController;
 import shaders.RGBPalette;

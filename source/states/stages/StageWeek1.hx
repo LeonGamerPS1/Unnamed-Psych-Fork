@@ -2,6 +2,7 @@ package states.stages;
 
 import states.stages.objects.*;
 import objects.Character;
+import objects.note.Note;
 
 class StageWeek1 extends BaseStage
 {
@@ -34,7 +35,7 @@ class StageWeek1 extends BaseStage
 			add(stageCurtains);
 		}
 	}
-	override function eventPushed(event:objects.Note.EventNote)
+	override function eventPushed(event:EventNote)
 	{
 		switch(event.event)
 		{
