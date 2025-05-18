@@ -38,9 +38,9 @@ class HScript extends SScript
 		{
 			hs.doString(code);
 			@:privateAccess
-			if(hs.parsingException != null)
+			if(hs.parsingExceptions != null)
 			{
-				PlayState.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingException.message}', FlxColor.RED);
+				PlayState.instance.addTextToDebug('ERROR ON LOADING (${hs.origin}): ${hs.parsingExceptions[0].message}', FlxColor.RED);
 			}
 		}
 	}
@@ -54,7 +54,7 @@ class HScript extends SScript
 
 		this.varsToBring = varsToBring;
 	
-		super(file, false, false);
+		super(file);
 
 		#if LUA_ALLOWED
 		parentLua = parent;
@@ -300,7 +300,6 @@ class HScript extends SScript
 			set('addBehindGF', PlayState.instance.addBehindGF);
 			set('addBehindDad', PlayState.instance.addBehindDad);
 			set('addBehindBF', PlayState.instance.addBehindBF);
-			setSpecialObject(PlayState.instance, false, PlayState.instance.instancesExclude);
 		}
 
 		if(varsToBring != null) {
@@ -314,7 +313,7 @@ class HScript extends SScript
 		}
 	}
 
-	public function executeCode(?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):TeaCall {
+	public function executeCode(?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null) {
 		if (funcToRun == null) return null;
 
 		if(!exists(funcToRun)) {
@@ -346,7 +345,7 @@ class HScript extends SScript
 		return callValue;
 	}
 
-	public function executeFunction(funcToRun:String = null, funcArgs:Array<Dynamic>):TeaCall {
+	public function executeFunction(funcToRun:String = null, funcArgs:Array<Dynamic>) {
 		if (funcToRun == null) return null;
 		return call(funcToRun, funcArgs);
 	}
@@ -356,7 +355,7 @@ class HScript extends SScript
 		funk.addLocalCallback("runHaxeCode", function(codeToRun:String, ?varsToBring:Any = null, ?funcToRun:String = null, ?funcArgs:Array<Dynamic> = null):Dynamic {
 			#if SScript
 			initHaxeModuleCode(funk, codeToRun, varsToBring);
-			final retVal:TeaCall = funk.hscript.executeCode(funcToRun, funcArgs);
+			final retVal = funk.hscript.executeCode(funcToRun, funcArgs);
 			if (retVal != null) {
 				if(retVal.succeeded)
 					return (retVal.returnValue == null || LuaUtils.isOfTypes(retVal.returnValue, [Bool, Int, Float, String, Array])) ? retVal.returnValue : null;
@@ -367,10 +366,7 @@ class HScript extends SScript
 					FunkinLua.luaTrace(funk.hscript.origin + ":" + calledFunc + " - " + e, false, false, FlxColor.RED);
 				return null;
 			}
-			else if (funk.hscript.returnValue != null)
-			{
-				return funk.hscript.returnValue;
-			}
+			
 			#else
 			FunkinLua.luaTrace("runHaxeCode: HScript isn't supported on this platform!", false, false, FlxColor.RED);
 			#end
@@ -407,7 +403,7 @@ class HScript extends SScript
 
 			#if SScript
 			if (c != null)
-				SScript.globalVariables[libName] = c;
+				SScript.global[libName] = c;
 			#end
 
 			#if SScript
@@ -428,12 +424,12 @@ class HScript extends SScript
 	}
 	#end
 
-	override public function destroy()
+	 public function destroy()
 	{
 		origin = null;
 		#if LUA_ALLOWED parentLua = null; #end
 
-		super.destroy();
+	
 	}
 }
 

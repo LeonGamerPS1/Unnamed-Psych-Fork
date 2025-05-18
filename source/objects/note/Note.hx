@@ -126,6 +126,7 @@ class Note extends FlxSprite
 	public var hitsound:String = 'hitsound';
 	public var sustain:Sustain;
 	public var strum(default, null):StrumNote;
+	public var flip(default, null):Bool = false;
 
 	private function set_multSpeed(value:Float):Float
 	{
@@ -142,6 +143,8 @@ class Note extends FlxSprite
 		texture = value;
 		return value;
 	}
+
+	var suspath = '';
 
 	public function defaultRGB()
 	{
@@ -340,6 +343,7 @@ class Note extends FlxSprite
 		{
 			var graphic = Paths.image('pixelUI/' + skinPixel + skinPostfix);
 			loadGraphic(graphic, true, Math.floor(graphic.width / 4), Math.floor(graphic.height / 5));
+			suspath = ('pixelUI/' + skinPixel + skinPostfix).replace('NOTE_assets', 'NOTE_assetsENDS');
 
 			setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 			loadPixelNoteAnims();
@@ -419,8 +423,7 @@ class Note extends FlxSprite
 
 		if (tooLate && !inEditor)
 		{
-			if (alpha > 0.3)
-				alpha = 0.3;
+			multAlpha = 0.3;
 		}
 	}
 
@@ -439,12 +442,14 @@ class Note extends FlxSprite
 		var strumAlpha:Float = myStrum.alpha;
 		var strumDirection:Float = myStrum.direction;
 		speed = songSpeed * multSpeed;
+		flip = strum.downScroll;
 
 		distance = (0.45 * (Conductor.songPosition - strumTime) * songSpeed * multSpeed);
 		if (!myStrum.downScroll)
 			distance *= -1;
 
 		var angleDir = strumDirection * Math.PI / 180;
+		
 		if (copyAngle)
 			angle = strumDirection - 90 + strumAngle + offsetAngle;
 

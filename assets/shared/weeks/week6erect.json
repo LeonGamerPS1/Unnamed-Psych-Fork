@@ -1,0 +1,41 @@
+{
+	"songs": [
+		[
+			"Senpai Erect",
+			"dad",
+			[
+				146,
+				113,
+				253
+			]
+		],
+		[
+			"Roses Erect",
+			"dad",
+			[
+				146,
+				113,
+				253
+			]
+		]
+	],
+	"hiddenUntilUnlocked": false,
+	"hideFreeplay": false,
+	"weekBackground": "school",
+	"difficulties": "Normal",
+	"weekCharacters": [
+		"senpai",
+		"bf",
+		"gf"
+	],
+	"storyName": "Erect senpai oh yeahhh",
+	"weekName": "week6erect",
+	"freeplayColor": [
+		146,
+		113,
+		253
+	],
+	"hideStoryMode": false,
+	"weekBefore": "week6",
+	"startUnlocked": true
+}

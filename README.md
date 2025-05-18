@@ -14,7 +14,7 @@ same goes for _Lua Scripts_, comment out or delete the line with `LUA_ALLOWED`, 
 
 ## Credits:
 
-???
+- FunkinCrew - The Actual game, [check it out!](https://github.com/FunkinCrew/Funkin/releases)
 
 ### Special Thanks
 
@@ -31,6 +31,7 @@ same goes for _Lua Scripts_, comment out or delete the line with `LUA_ALLOWED`, 
 - Nebula the Zorua - some Lua reworks
 - superpowers04 - LUA JIT Fork
 - TheoDevelops - [Funkin-Modchart Library](https://github.com/TheoDevelops/FunkinModchart)
+
 
 ---
 

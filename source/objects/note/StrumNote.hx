@@ -1,4 +1,5 @@
 package objects.note;
+
 import flixel.FlxObject;
 import flixel.FlxBasic;
 import backend.animation.PsychAnimationController;
@@ -14,6 +15,7 @@ class StrumNote extends FlxSprite
 	public var direction:Float = 90; // plan on doing scroll directions soon -bb
 	public var downScroll:Bool = false; // plan on doing scroll directions soon -bb
 	public var sustainReduce:Bool = true;
+	public var cover:HoldCover;
 
 	private var player:Int;
 
@@ -58,6 +60,8 @@ class StrumNote extends FlxSprite
 		this.player = player;
 		this.noteData = leData;
 		super(x, y);
+		cover = new HoldCover(noteData, this);
+		cover.visible = false;
 
 		var skin:String = null;
 		if (PlayState.SONG != null && PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1)
@@ -172,6 +176,9 @@ class StrumNote extends FlxSprite
 				resetAnim = 0;
 			}
 		}
+
+		if (cover != null && cover.cameras != cameras)
+			cover.cameras = cameras;
 		super.update(elapsed);
 	}
 
@@ -191,5 +198,12 @@ class StrumNote extends FlxSprite
 		y = sprite.y + (sprite.height / 2) - (height / 2);
 
 		return this;
+	}
+
+	override function draw()
+	{
+		super.draw();
+		if (cover != null && cover.visible && cover.exists)
+			cover.setPosition(x - width - (PlayState.isPixelStage ? 2 * 6 : 0), (y - height) + Note.swagWidth / 7 - 10 );
 	}
 }

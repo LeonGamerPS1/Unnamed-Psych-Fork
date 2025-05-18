@@ -18,11 +18,17 @@ using flixel.util.FlxColorTransformUtil;
  * An object able to vertically repeat an `FlxFrame` by an arbitary amount.
  * This class has been built for hold note trails in mind.
  */
-class TiledSprite extends FlxSprite {
+class TiledSprite extends FlxSprite
+{
 	/**
 	 * How many times the frame should repeat.
 	 */
 	public var tiles(default, set):Float;
+
+	/**
+	 * If the frame should be adjusted.
+	 */
+	var adjustFrame:Bool = true;
 
 	/**
 	 * The tail gets it's own dedicated matrix transformation
@@ -30,6 +36,7 @@ class TiledSprite extends FlxSprite {
 	 * such as offsets and rotations.
 	 */
 	var _tailMatrix:FlxMatrix = new FlxMatrix();
+
 	var _tailFrame:FlxFrame;
 
 	/**
@@ -47,42 +54,49 @@ class TiledSprite extends FlxSprite {
 
 	var _clippingDirty:Bool = false;
 	var _quadAmount:Int = 0;
-	
+
 	/**
 	 * Sets the tail frame for this sprite.
 	 * @param animation Animation containing the desired tail frames. If `null`, no tail is rendered.
 	 */
-	public function setTail(animation:String):Void {
-	    if (animation == null) {
-	        _tailFrame = null;
-	        return;
-	    }
-	    
-	    var anim:FlxAnimation = this.animation.getByName(animation);
-	    
-	    if (anim == null) {
-	        FlxG.log.warn('TiledSprite: Could not find tail animation "${animation}"!');
-	        _tailFrame = null;
-	        return;
-	    }
+	public function setTail(animation:String):Void
+	{
+		if (animation == null)
+		{
+			_tailFrame = null;
+			return;
+		}
 
-	    // copy the frame and modify coordinates to workaround texture bleeding gaps
+		var anim:FlxAnimation = this.animation.getByName(animation);
+
+		if (anim == null)
+		{
+			FlxG.log.warn('TiledSprite: Could not find tail animation "${animation}"!');
+			_tailFrame = null;
+			return;
+		}
+
+		// copy the frame and modify coordinates to workaround texture bleeding gaps if adjust frame
 		var frame:FlxFrame = frames.frames[anim.frames[0]];
-	    _tailFrame = frame.copyTo(_tailFrame);
+		_tailFrame = frame.copyTo(_tailFrame);
 
-		_tailFrame.sourceSize.y -= 2;
-	    _tailFrame.frame.height -= 2;
-	    _tailFrame.frame.y += 2;
+		if (adjustFrame)
+		{
+			_tailFrame.sourceSize.y -= 2;
+			_tailFrame.frame.height -= 2;
+			_tailFrame.frame.y += 2;
+		}
 	}
 
 	@:inheritDoc(flixel.FlxSprite.getScreenBounds)
-	override function getScreenBounds(?newRect:FlxRect, ?camera:FlxCamera):FlxRect {
+	override function getScreenBounds(?newRect:FlxRect, ?camera:FlxCamera):FlxRect
+	{
 		if (newRect == null)
 			newRect = FlxRect.get();
-		
+
 		if (camera == null)
 			camera = FlxG.camera;
-		
+
 		newRect.setPosition(x, y);
 		if (pixelPerfectPosition)
 			newRect.floor();
@@ -98,8 +112,10 @@ class TiledSprite extends FlxSprite {
 		return newRect.getRotatedBounds(angle, _scaledOrigin, newRect);
 	}
 
-	override function draw():Void {
-		if (_clippingDirty) {
+	override function draw():Void
+	{
+		if (_clippingDirty)
+		{
 			regenerateClippedFrame();
 			_clippingDirty = false;
 		}
@@ -107,36 +123,45 @@ class TiledSprite extends FlxSprite {
 		super.draw();
 	}
 
-	override function drawComplex(camera:FlxCamera):Void {
-	    getScreenPosition(_point, camera).subtractPoint(offset);
+	override function drawComplex(camera:FlxCamera):Void
+	{
+		getScreenPosition(_point, camera).subtractPoint(offset);
 		_point.add(origin.x, origin.y);
-        
+
 		prepareMatrix(_frame, _matrix);
 		prepareMatrix(_tailFrame, _tailMatrix);
 
-		var drawItem:FlxDrawQuadsItem = camera.startQuadBatch(_frame.parent, colorTransform?.hasRGBMultipliers(), colorTransform?.hasRGBAOffsets(), blend, antialiasing, shader);
+		var drawItem:FlxDrawQuadsItem = camera.startQuadBatch(_frame.parent, colorTransform?.hasRGBMultipliers(), colorTransform?.hasRGBAOffsets(), blend,
+			antialiasing, shader);
 		var screenOffset:Float = (flipY ? tileHeight() : 0);
 
-		for (i in getFirstTileOnScreen(camera)..._quadAmount) {
+		for (i in getFirstTileOnScreen(camera)..._quadAmount)
+		{
 			drawTile(i, drawItem);
 
 			// if it's offscreen, stop rendering
-			if (_matrix.ty >= camera.viewMarginBottom + screenOffset) {
+			if (_matrix.ty >= camera.viewMarginBottom + screenOffset)
+			{
 				break;
 			}
 		}
-    }
+	}
 
-	function drawTile(tile:Int, item:FlxDrawQuadsItem):Void {
+	function drawTile(tile:Int, item:FlxDrawQuadsItem):Void
+	{
 		var frame:FlxFrame = _frame;
 		var isTail:Bool = isTail(tile);
-		
-		if (isTileClipped(tile)) {
+
+		if (isTileClipped(tile))
+		{
 			frame = _clippedTileFrame;
-			if (_clippingOffset > 0) {
+			if (_clippingOffset > 0)
+			{
 				matrixTranslate(-_clippingOffset);
 			}
-		} else if (isTail) {
+		}
+		else if (isTail)
+		{
 			frame = _tailFrame;
 		}
 
@@ -144,7 +169,8 @@ class TiledSprite extends FlxSprite {
 		matrixTranslate(frame.frame.height * Math.abs(scale.y));
 	}
 
-	function regenerateClippedFrame():Void {
+	function regenerateClippedFrame():Void
+	{
 		var parentFrame:FlxFrame = (_tailFrame != null && _quadAmount == 1) ? _tailFrame : _frame;
 		var reduction:Float = parentFrame.frame.height * (_quadAmount - tiles);
 
@@ -155,11 +181,13 @@ class TiledSprite extends FlxSprite {
 		_clippingOffset = (flipY ? reduction * Math.abs(scale.y) : 0);
 	}
 
-	function prepareMatrix(frame:FlxFrame, matrix:FlxMatrix):Void {
-	    if (frame == null) return;
+	function prepareMatrix(frame:FlxFrame, matrix:FlxMatrix):Void
+	{
+		if (frame == null)
+			return;
 
-	    frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
-        
+		frame.prepareMatrix(matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
+
 		matrix.translate(-origin.x, -origin.y);
 		matrix.scale(scale.x, scale.y);
 
@@ -168,30 +196,35 @@ class TiledSprite extends FlxSprite {
 
 		matrix.translate(_point.x, _point.y);
 
-		if (isPixelPerfectRender(camera)) {
+		if (isPixelPerfectRender(camera))
+		{
 			matrix.tx = Math.floor(matrix.tx);
 			matrix.ty = Math.floor(matrix.ty);
 		}
 	}
 
-	function matrixTranslate(y:Float):Void {
-	    var translateX:Float = -y * _sinAngle;
-	    var translateY:Float = y * _cosAngle;
-	    
-	    if (_tailFrame != null)
-	        _tailMatrix.translate(translateX, translateY);
-	        
-	    _matrix.translate(translateX, translateY);
+	function matrixTranslate(y:Float):Void
+	{
+		var translateX:Float = -y * _sinAngle;
+		var translateY:Float = y * _cosAngle;
+
+		if (_tailFrame != null)
+			_tailMatrix.translate(translateX, translateY);
+
+		_matrix.translate(translateX, translateY);
 	}
 
-	function getFirstTileOnScreen(camera:FlxCamera):Int {
+	function getFirstTileOnScreen(camera:FlxCamera):Int
+	{
 		var offscreenHeight:Float = camera.viewMarginTop - _point.y;
-		if (offscreenHeight <= 0) return 0;
+		if (offscreenHeight <= 0)
+			return 0;
 
 		var nextTileHeight:Float = getHeightForTile(0);
 		var output:Int = 0;
 
-		while (offscreenHeight >= nextTileHeight) {
+		while (offscreenHeight >= nextTileHeight)
+		{
 			matrixTranslate(nextTileHeight);
 			offscreenHeight -= nextTileHeight;
 			nextTileHeight = getHeightForTile(++output);
@@ -200,54 +233,66 @@ class TiledSprite extends FlxSprite {
 		return output;
 	}
 
-	inline function isTileClipped(tile:Int):Bool {
+	inline function isTileClipped(tile:Int):Bool
+	{
 		return (!flipY && tile == 0) || (flipY && tile == _quadAmount - 1);
 	}
-	
-	inline function isTail(tile:Int):Bool {
+
+	inline function isTail(tile:Int):Bool
+	{
 		return _tailFrame != null && ((flipY && tile == 0) || (!flipY && tile == _quadAmount - 1));
 	}
 
-	inline function getHeightForTile(tile:Int):Float {
+	inline function getHeightForTile(tile:Int):Float
+	{
 		return isTileClipped(tile) ? (_clippedTileFrame.frame.height * Math.abs(scale.y)) : (isTail(tile) ? tailHeight() : tileHeight());
 	}
 
-	inline function tileHeight():Float {
+	inline function tileHeight():Float
+	{
 		return _frame.frame.height * Math.abs(scale.y);
 	}
-	
-	inline function tailHeight():Float {
-	    return _tailFrame.frame.height * Math.abs(scale.y);
+
+	inline function tailHeight():Float
+	{
+		return _tailFrame.frame.height * Math.abs(scale.y);
 	}
-	
-	override function set_frame(v:FlxFrame):FlxFrame {
+
+	override function set_frame(v:FlxFrame):FlxFrame
+	{
 		var oldFrame:FlxFrame = frame;
-	    super.set_frame(v);
+		super.set_frame(v);
 
-		if (v == null) return v;
-	    
-	    if (_frame != null) {
-	        // texture bleeding gap workaround
+		if (v == null)
+			return v;
+
+		if (_frame != null && adjustFrame)
+		{
+			// texture bleeding gap workaround
 			_frame.sourceSize.y -= 2;
-	        _frame.frame.height -= 2;
-	        _frame.frame.y += 1;
-	    }
+			_frame.frame.height -= 2;
+			_frame.frame.y += 1;
+		}
 
-		if (v != oldFrame) {
+		if (v != oldFrame)
+		{
 			_clippingDirty = true;
 		}
 
-	    return v;
+		return v;
 	}
-	
-	override function set_angle(v:Float):Float {
+
+	override function set_angle(v:Float):Float
+	{
 		super.set_angle(v);
 		updateTrig();
 		return v;
 	}
 
-	override function set_height(v:Float):Float {
-		if (height != v) {
+	override function set_height(v:Float):Float
+	{
+		if (height != v)
+		{
 			var tileHeight:Float = tileHeight();
 			var tailHeight:Float = (_tailFrame == null ? tileHeight : tailHeight());
 
@@ -259,22 +304,27 @@ class TiledSprite extends FlxSprite {
 		return super.set_height(v);
 	}
 
-	override function set_flipY(v:Bool):Bool {
-		if (flipY != v) {
+	override function set_flipY(v:Bool):Bool
+	{
+		if (flipY != v)
+		{
 			_clippingDirty = true;
 		}
 		return super.set_flipY(v);
 	}
 
-	function set_tiles(v:Float):Float {
-		if (tiles != v) {
+	function set_tiles(v:Float):Float
+	{
+		if (tiles != v)
+		{
 			_quadAmount = Math.ceil(v);
 			_clippingDirty = true;
 		}
 		return tiles = v;
 	}
 
-	override function destroy():Void {
+	override function destroy():Void
+	{
 		_clippedTileFrame = FlxDestroyUtil.destroy(_clippedTileFrame);
 		_tailFrame = FlxDestroyUtil.destroy(_tailFrame);
 		_tailMatrix = null;
